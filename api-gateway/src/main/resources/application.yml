@@ -17,7 +17,7 @@ spring:
           routes:
 
             - id: user-service
-              uri: http://localhost:8081
+              uri: lb://user-service
               predicates:
                 - Path=/api/users/**
               filters:
@@ -27,7 +27,7 @@ spring:
                     fallbackUri: forward:/fallback/user
 
             - id: order-service
-              uri: http://localhost:8082
+              uri: lb://order-service
               predicates:
                 - Path=/api/orders/**
               filters:
@@ -35,3 +35,8 @@ spring:
                   args:
                     name: orderServiceCircuitBreaker
                     fallbackUri: forward:/fallback/order
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
