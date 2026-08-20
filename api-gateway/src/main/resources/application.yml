@@ -1,42 +1,9 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: api-gateway
 
-  cloud:
-    gateway:
-      server:
-        webflux:
+  config:
+    import: optional:configserver:http://localhost:8888
 
-          httpclient:
-            connect-timeout: 2000
-            response-timeout: 3s
-
-          routes:
-
-            - id: user-service
-              uri: lb://user-service
-              predicates:
-                - Path=/api/users/**
-              filters:
-                - name: CircuitBreaker
-                  args:
-                    name: userServiceCircuitBreaker
-                    fallbackUri: forward:/fallback/user
-
-            - id: order-service
-              uri: lb://order-service
-              predicates:
-                - Path=/api/orders/**
-              filters:
-                - name: CircuitBreaker
-                  args:
-                    name: orderServiceCircuitBreaker
-                    fallbackUri: forward:/fallback/order
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8082
