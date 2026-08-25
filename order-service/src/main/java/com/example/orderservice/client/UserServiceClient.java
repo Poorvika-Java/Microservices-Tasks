@@ -1,6 +1,7 @@
 package com.example.orderservice.client;
 
 import com.example.orderservice.dto.UserResponse;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ public class UserServiceClient {
 
     @Retry(name = "userService")
     @CircuitBreaker(name = "userService", fallbackMethod = "fallbackUser")
+    @Bulkhead(name = "userService")
     public UserResponse getUserById(Long userId) {
 
         try {
@@ -37,7 +39,6 @@ public class UserServiceClient {
         }
     }
 
-
     public UserResponse getSlowUser() {
 
         return restClient.get()
@@ -48,7 +49,9 @@ public class UserServiceClient {
 
     public UserResponse fallbackUser(Long userId, Throwable ex) {
 
-        throw new RuntimeException("User Service is currently unavailable");
+        throw new RuntimeException(
+                "User Service is currently unavailable"
+        );
     }
 
     @Retry(name = "userService")
