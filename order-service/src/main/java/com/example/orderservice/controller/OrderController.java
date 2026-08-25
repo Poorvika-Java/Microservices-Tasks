@@ -19,7 +19,8 @@ public class OrderController {
             UserServiceClient userServiceClient) {
 
         this.orderService = orderService;
-        this.userServiceClient = userServiceClient;    }
+        this.userServiceClient = userServiceClient;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(
@@ -30,8 +31,7 @@ public class OrderController {
                     .body("Order ID must be greater than 0");
         }
 
-        OrderResponse order =
-                orderService.getOrderById(id);
+        OrderResponse order = orderService.getOrderById(id);
 
         if (order == null) {
             return ResponseEntity.notFound().build();
@@ -44,8 +44,9 @@ public class OrderController {
     public ResponseEntity<?> slowUserTest() {
 
         try {
-
-            return ResponseEntity.ok(userServiceClient.getSlowUser());
+            return ResponseEntity.ok(
+                    userServiceClient.getSlowUser()
+            );
 
         } catch (Exception ex) {
 
@@ -60,7 +61,8 @@ public class OrderController {
 
         try {
 
-            UserResponse user = userServiceClient.getRetryTestUser();
+            UserResponse user =
+                    userServiceClient.getRetryTestUser();
 
             return ResponseEntity.ok(user);
 

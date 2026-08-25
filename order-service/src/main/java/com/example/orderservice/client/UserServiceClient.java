@@ -16,7 +16,8 @@ public class UserServiceClient {
 
     public UserServiceClient(
             RestClient.Builder restClientBuilder,
-            @Value("${user-service.base-url}") String userServiceBaseUrl) {
+            @Value("${user-service.base-url:http://localhost:8081}")
+            String userServiceBaseUrl) {
 
         this.restClient = restClientBuilder
                 .baseUrl(userServiceBaseUrl)

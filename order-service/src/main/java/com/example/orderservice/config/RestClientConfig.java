@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
+import java.time.Duration;
+
 @Configuration
 public class RestClientConfig {
 
@@ -14,8 +16,8 @@ public class RestClientConfig {
         SimpleClientHttpRequestFactory factory =
                 new SimpleClientHttpRequestFactory();
 
-        factory.setConnectTimeout(2000);
-        factory.setReadTimeout(3000);
+        factory.setConnectTimeout(Duration.ofSeconds(2));
+        factory.setReadTimeout(Duration.ofSeconds(3));
 
         return RestClient.builder()
                 .requestFactory(factory);
