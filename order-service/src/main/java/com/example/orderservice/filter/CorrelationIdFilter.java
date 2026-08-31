@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -12,6 +14,8 @@ import java.util.UUID;
 
 @Component
 public class CorrelationIdFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(CorrelationIdFilter.class);
 
     private static final String CORRELATION_ID = "X-Correlation-ID";
 
@@ -22,7 +26,6 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
         String correlationId = request.getHeader(CORRELATION_ID);
 
         if (correlationId == null || correlationId.isBlank()) {
-
             correlationId = UUID.randomUUID().toString();
         }
 
@@ -30,11 +33,17 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
         response.setHeader(CORRELATION_ID, correlationId);
 
+        log.info("Request started method={} path={} correlationId={}", request.getMethod(),
+                request.getRequestURI(), correlationId);
+
         try {
 
             filterChain.doFilter(request, response);
 
         } finally {
+
+            log.info("Request completed method={} path={} status={} correlationId={}", request.getMethod(), request.getRequestURI(),
+                    response.getStatus(), correlationId);
 
             MDC.remove("correlationId");
         }
